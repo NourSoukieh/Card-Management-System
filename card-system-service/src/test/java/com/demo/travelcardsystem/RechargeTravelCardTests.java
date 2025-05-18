@@ -1,5 +1,6 @@
 package com.demo.travelcardsystem;
 
+import com.demo.travelcardsystem.service.util.TravelHelper;
 import com.demo.travelcardsystem.entity.TravelCard;
 import com.demo.travelcardsystem.repository.InMemoryCardTransactionRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,7 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-class RechargeTravelCardTests extends IntegrationTest{
+class RechargeTravelCardTests extends IntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -30,34 +31,31 @@ class RechargeTravelCardTests extends IntegrationTest{
     @Autowired
     private InMemoryCardTransactionRepository inMemoryCardTransactionRepository;
     @Autowired
-    private TravelHelperTest travelHelperTest;
+    private TravelHelper travelHelper;
 
     private static Stream<Arguments> usersGenerator() {
         return Stream.of(
-                Arguments.of("1AE101",  30),
-                Arguments.of("1AE102",  40)
+                Arguments.of("1AE101", 30),
+                Arguments.of("1AE102", 40)
         );
     }
 
     @BeforeEach
-    public void resetRepository() {
+    void resetRepository() {
         inMemoryCardTransactionRepository.clearTravelCardStore();
-
     }
-
 
     @DisplayName("Service is Up and Running")
     @Test
-    public void check_if_ping_is_working() throws Exception {
+    void check_if_ping_is_working() throws Exception {
         mockMvc.perform(get("/api/card/ping"))
                 .andExpect(status().isOk());
-
     }
 
     @DisplayName("User try to register himself successfully")
     @ParameterizedTest
     @MethodSource("usersGenerator")
-    public void register_user_in_the_system(String cardNumber, double amount) throws Exception {
+    void register_user_in_the_system(String cardNumber, double amount) throws Exception {
         //GIVEN - user enter his user detail
         TravelCard travelCard = new TravelCard();
         travelCard.setCardNumber(cardNumber);
@@ -77,7 +75,7 @@ class RechargeTravelCardTests extends IntegrationTest{
 
     @DisplayName("User try to recharge a invalid card. System throws INVALID_CARD exception")
     @Test
-    public void register_user_with_invalid_card_number() throws Exception {
+    void register_user_with_invalid_card_number() throws Exception {
 
         //INVALID CARD NUMBER IS SET HERE
         TravelCard travelCard = new TravelCard();
@@ -85,7 +83,7 @@ class RechargeTravelCardTests extends IntegrationTest{
         travelCard.setBalance(30);
 
         //WHEN -  User try to register himself
-       String errorMsg =  mockMvc.perform(post("/api/card/register")
+        String errorMsg = mockMvc.perform(post("/api/card/register")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(travelCard)))
                 //THEN -  status should be not acceptable
@@ -94,15 +92,15 @@ class RechargeTravelCardTests extends IntegrationTest{
 
 
         //THEN -  exception should be thrown
-        assertEquals(errorMsg, "This card is Invalid. Please use a valid card");
+        assertEquals("This card is Invalid. Please use a valid card", errorMsg);
     }
 
     @DisplayName("Users are able to recharge the card successfully")
     @ParameterizedTest
     @MethodSource("usersGenerator")
-    public void users_are_able_to_recharge_the_card_successfully(String cardNumber, double amount) throws Exception {
+    void users_are_able_to_recharge_the_card_successfully(String cardNumber, double amount) throws Exception {
         // GIVEN - user exists in the system with a valid card number and zero amount on card. Records are directly inserted in the repository.
-        travelHelperTest.directUserRegistration(cardNumber, 0);
+        travelHelper.directUserRegistration(cardNumber, 0);
 
         //WHEN - user try to recharge the card
         mockMvc.perform(post("/api/card/recharge/{rechargeAmount}", amount)

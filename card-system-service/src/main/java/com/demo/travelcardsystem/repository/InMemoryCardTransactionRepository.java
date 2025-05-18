@@ -4,7 +4,6 @@ import com.demo.travelcardsystem.entity.Station;
 import com.demo.travelcardsystem.entity.TravelCard;
 import com.demo.travelcardsystem.exception.InvalidCardException;
 import com.demo.travelcardsystem.exception.InvalidDataProvidedException;
-import com.demo.travelcardsystem.exception.InvalidRechargeAmount;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -18,12 +17,12 @@ import java.util.concurrent.ConcurrentMap;
 public class InMemoryCardTransactionRepository {
 
     // Key is cardNumber
-    private ConcurrentMap<String, TravelCard> travelCardStore = new ConcurrentHashMap<>();
-    private Set<Station> stationStore = new HashSet<>();
+    private final ConcurrentMap<String, TravelCard> travelCardStore = new ConcurrentHashMap<>();
+    private final Set<Station> stationStore = new HashSet<>();
 
     public TravelCard registerNewCard(TravelCard travelCard) {
         // Check if card already exists. Then throw exception
-        if(null != travelCardStore.get(travelCard.getCardNumber())) {
+        if (null != travelCardStore.get(travelCard.getCardNumber())) {
             throw new InvalidCardException("This card is already registered.");
         }
         travelCardStore.put(travelCard.getCardNumber(), travelCard);
@@ -32,7 +31,7 @@ public class InMemoryCardTransactionRepository {
 
     public TravelCard findCardByCardNumber(String cardNumber) {
         TravelCard travelCard = travelCardStore.get(cardNumber);
-        if(travelCard == null) {
+        if (travelCard == null) {
             throw new InvalidCardException("This card is Invalid. Please use a valid card");
         }
 
@@ -40,8 +39,8 @@ public class InMemoryCardTransactionRepository {
     }
 
     public Station findStationByName(String stationName) {
-       return stationStore.stream().filter(station -> station.getName().equals(stationName)).findAny()
-               .orElseThrow(InvalidDataProvidedException::new);
+        return stationStore.stream().filter(station -> station.getName().equals(stationName)).findAny()
+                .orElseThrow(InvalidDataProvidedException::new);
     }
 
     public boolean addAllStationsToStationStore(Set<Station> stations) {

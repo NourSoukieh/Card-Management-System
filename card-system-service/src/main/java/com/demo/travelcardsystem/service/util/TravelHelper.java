@@ -1,20 +1,21 @@
-package com.demo.travelcardsystem;
+package com.demo.travelcardsystem.service.util;
 
 import com.demo.travelcardsystem.constant.TransportType;
 import com.demo.travelcardsystem.entity.TravelCard;
 import com.demo.travelcardsystem.model.request.SwipeRequest;
 import com.demo.travelcardsystem.repository.InMemoryCardTransactionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TravelHelperTest {
+public class TravelHelper {
 
-    @Autowired
-    private InMemoryCardTransactionRepository inMemoryCardTransactionRepository;
+    private final InMemoryCardTransactionRepository inMemoryCardTransactionRepository;
 
+    public TravelHelper(InMemoryCardTransactionRepository inMemoryCardTransactionRepository) {
+        this.inMemoryCardTransactionRepository = inMemoryCardTransactionRepository;
+    }
 
-    public  SwipeRequest prepareSwipeRequest(String cardNumber, String stationName, TransportType transportType) {
+    public SwipeRequest prepareSwipeRequest(String cardNumber, String stationName, TransportType transportType) {
         SwipeRequest swipeRequest = new SwipeRequest();
         swipeRequest.setCardNumber(cardNumber);
         swipeRequest.setStationName(stationName);
@@ -29,6 +30,6 @@ public class TravelHelperTest {
         travelCard.setCardNumber(cardNumber);
         travelCard.setBalance(amount);
 
-       return inMemoryCardTransactionRepository.registerNewCard(travelCard);
+        return inMemoryCardTransactionRepository.registerNewCard(travelCard);
     }
 }

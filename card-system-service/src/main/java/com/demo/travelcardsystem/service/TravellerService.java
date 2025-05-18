@@ -29,11 +29,11 @@ public class TravellerService {
      * @param cardRegistrationRequest
      */
     public void registerNewCard(CardRegistrationRequest cardRegistrationRequest) {
-        if(cardRegistrationRequest == null || cardRegistrationRequest.getCardNumber() == null || cardRegistrationRequest.getCardNumber().isEmpty()) {
+        if (cardRegistrationRequest == null || cardRegistrationRequest.getCardNumber() == null || cardRegistrationRequest.getCardNumber().isEmpty()) {
             throw new InvalidCardException("This card is Invalid. Please use a valid card");
         }
 
-        if(cardRegistrationRequest != null && cardRegistrationRequest.getBalance() < 0 ) {
+        if (cardRegistrationRequest.getBalance() < 0) {
             throw new InvalidRechargeAmount("Recharge amount must not be negative");
         }
 
@@ -51,11 +51,11 @@ public class TravellerService {
      * @param rechargeAmount
      */
     public void rechargeTheCard(String cardNumber, double rechargeAmount) {
-        if(cardNumber == null || cardNumber.isEmpty()) {
+        if (cardNumber == null || cardNumber.isEmpty()) {
             throw new InvalidCardException("This card is Invalid. Please use a valid card");
         }
 
-        if(rechargeAmount < 0 ) {
+        if (rechargeAmount < 0) {
             throw new InvalidRechargeAmount("Recharge amount must not be negative");
         }
 
@@ -67,7 +67,7 @@ public class TravellerService {
     public TravelCardResponse swipeCard(SwipeRequest swipeRequest) {
 
         //If Transport Type is not selected throw exception
-        if(null == swipeRequest.getTransportType()) throw new InvalidDataProvidedException();
+        if (null == swipeRequest.getTransportType()) throw new InvalidDataProvidedException();
 
         TravelCard travelCard = inMemoryCardTransactionRepository.findCardByCardNumber(swipeRequest.getCardNumber());
         Station station = inMemoryCardTransactionRepository.findStationByName(swipeRequest.getStationName());
@@ -95,16 +95,16 @@ public class TravellerService {
         }
 
         //prepare response and return
-       return travelCardConverter.travelCard2TravelCardResponseConverter.apply(travelCard);
+        return travelCardConverter.getConverter().apply(travelCard);
 
     }
 
     public TravelCardResponse checkCardDetail(String cardNumber) {
         TravelCard travelCard = inMemoryCardTransactionRepository.findCardByCardNumber(cardNumber);
-        return travelCardConverter.travelCard2TravelCardResponseConverter.apply(travelCard);
+        return travelCardConverter.getConverter().apply(travelCard);
     }
 
     public List<String> fetchAllCard() {
-       return inMemoryCardTransactionRepository.fetchAllCardNumber();
+        return inMemoryCardTransactionRepository.fetchAllCardNumber();
     }
 }

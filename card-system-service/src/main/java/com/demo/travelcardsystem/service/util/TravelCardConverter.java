@@ -8,11 +8,11 @@ import java.util.function.Function;
 
 @Component
 public class TravelCardConverter {
-    public Function<TravelCard, TravelCardResponse> travelCard2TravelCardResponseConverter = travelCard -> {
+    private final Function<TravelCard, TravelCardResponse> travelCard2TravelCardResponseConverter = travelCard -> {
         TravelCardResponse travelCardResponse = new TravelCardResponse();
         travelCardResponse.setCardNumber(travelCard.getCardNumber());
         travelCardResponse.setBalance(travelCard.getBalance());
-        if(null != travelCard.getCurrentJourney()) {
+        if (null != travelCard.getCurrentJourney()) {
             travelCardResponse.setTransportType(travelCard.getCurrentJourney().getTransportType());
         }
 
@@ -21,4 +21,8 @@ public class TravelCardConverter {
 
         return travelCardResponse;
     };
+
+    public Function<TravelCard, TravelCardResponse> getConverter() {
+        return travelCard2TravelCardResponseConverter;
+    }
 }
