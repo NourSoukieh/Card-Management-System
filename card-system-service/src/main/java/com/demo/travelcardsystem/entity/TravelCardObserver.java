@@ -10,17 +10,19 @@ import java.util.Optional;
 @Data
 @AllArgsConstructor
 @Component
-public class TravelCardObserver implements Observer<TravelCard>{
+
+public class TravelCardObserver implements Observer<TravelCard> {
 
     private FareCalculator fareCalculator;
 
     @Override
     public void reactOnChange(TravelCard travelCard) {
         TravelCard card = travelCard;
-        Journey journey =  travelCard.getCurrentJourney();
+
+        Journey journey = travelCard.getCurrentJourney();
 
         //When journey is completed then add max charge back and debit chargeable fare
-        if(journey.isJourneyCompleted()) {
+        if (journey.isJourneyCompleted()) {
             card.addCredit(fareCalculator.getTravelStrategy().getRuleCollection().getMaxFare());
             debitChargeableFare(card);
         } else {
