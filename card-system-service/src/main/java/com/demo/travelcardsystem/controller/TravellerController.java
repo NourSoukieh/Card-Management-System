@@ -2,6 +2,7 @@ package com.demo.travelcardsystem.controller;
 
 import com.demo.travelcardsystem.model.request.CardRegistrationRequest;
 import com.demo.travelcardsystem.model.request.SwipeRequest;
+import com.demo.travelcardsystem.model.response.StationResponse;
 import com.demo.travelcardsystem.model.response.TravelCardResponse;
 import com.demo.travelcardsystem.service.TravellerService;
 import lombok.AllArgsConstructor;
@@ -45,6 +46,11 @@ public class TravellerController {
     @GetMapping
     public List<String> fetchAllCard() {
         return travellerService.fetchAllCard();
+    }
+    
+    @GetMapping(value = "/stations")
+    public List<StationResponse> fetchAllStations() {
+        return travellerService.fetchAllStations();
     }
 
 

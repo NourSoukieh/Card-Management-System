@@ -8,13 +8,16 @@ import com.demo.travelcardsystem.exception.InvalidDataProvidedException;
 import com.demo.travelcardsystem.exception.InvalidRechargeAmount;
 import com.demo.travelcardsystem.model.request.CardRegistrationRequest;
 import com.demo.travelcardsystem.model.request.SwipeRequest;
+import com.demo.travelcardsystem.model.response.StationResponse;
 import com.demo.travelcardsystem.model.response.TravelCardResponse;
 import com.demo.travelcardsystem.repository.InMemoryCardTransactionRepository;
 import com.demo.travelcardsystem.service.util.TravelCardConverter;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -93,6 +96,19 @@ public class TravellerService {
 
     public List<String> fetchAllCard() {
         return inMemoryCardTransactionRepository.fetchAllCardNumber();
+    }
+    
+    public List<StationResponse> fetchAllStations() {
+        return inMemoryCardTransactionRepository.fetchAllStations()
+                .stream()
+                .map(station -> {
+                    StationResponse response = new StationResponse();
+                    response.setName(station.getName());
+                    response.setZones(station.getZones());
+                    return response;
+                })
+                .sorted(Comparator.comparing(StationResponse::getName))
+                .collect(Collectors.toList());
     }
 }
 
